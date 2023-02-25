@@ -3,6 +3,9 @@ using UnityEngine;
 class Mover : MonoBehaviour
 {
     [SerializeField] float speed;
+    [SerializeField] float angularSpeed = 180;
+
+    [SerializeField] Transform cameraTransform;
 
     void Update()
     {
@@ -24,8 +27,11 @@ class Mover : MonoBehaviour
 
         t.position = pos;
 
-        if(direction != Vector3.zero)
-            t.rotation = Quaternion.LookRotation(direction);
+        if (direction != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            t.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, angularSpeed * Time.deltaTime);
+        }
     }
 
     Vector3 GetInputDirction()
@@ -47,7 +53,14 @@ class Mover : MonoBehaviour
         if (down)
             z -= 1;
 
-        Vector3 direction = new Vector3(x, 0, z);
+        Vector3 rightDir = cameraTransform.right;
+        Vector3 forwardDir = cameraTransform.forward;
+        Vector3 direction = (rightDir * x) + (forwardDir * z);
+
+        //Vector3 direction = new Vector3(x, 0, z);
+
+        direction.y = 0;
+
         direction.Normalize();
         return direction;
     }
