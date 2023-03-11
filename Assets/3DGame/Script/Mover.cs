@@ -6,8 +6,9 @@ class Mover : MonoBehaviour
     [SerializeField] float angularSpeed = 180;
 
     [SerializeField] Transform cameraTransform;
+    [SerializeField] Rigidbody rb;
 
-    void Update()
+    void FixedUpdate()
     {
         Vector3 direction = GetInputDirction();
         Move(direction);
@@ -20,17 +21,17 @@ class Mover : MonoBehaviour
         // Quaternion rotation =  t.rotation;
 
 
-        Vector3 pos = t.position;
+        Vector3 pos = rb.position;
 
         Vector3 velocity = direction * speed;
-        pos += velocity * Time.deltaTime;
+        pos += velocity * Time.fixedDeltaTime;
 
-        t.position = pos;
+        rb.position = pos;
 
         if (direction != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            t.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, angularSpeed * Time.deltaTime);
+            t.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, angularSpeed * Time.fixedDeltaTime);
         }
     }
 
